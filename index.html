@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Điều 58. Áp dụng văn bản quy phạm pháp luật - Ocean Pastel</title>
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tải Google Fonts: Be Vietnam Pro cho tiếng Việt cực kỳ sắc nét, hiện đại và dễ đọc -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Cài đặt biến màu Monochromatic Pastel Ocean Blue */
+        :root {
+            --bg-ocean-light: #F0F8FF;
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --card-border: #B6E0FE;
+            --accent-deep: #0B4F8A;
+            --accent-fresh: #2684D6;
+            --accent-cyan: #00A8E8;
+            --accent-sky: #38B6FF;
+            --text-main: #083358;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: var(--bg-ocean-light);
+            background-image: 
+                radial-gradient(circle at 12% 10%, rgba(182, 224, 254, 0.55) 0%, transparent 45%),
+                radial-gradient(circle at 88% 15%, rgba(124, 196, 250, 0.4) 0%, transparent 48%),
+                linear-gradient(180deg, #F0F8FF 0%, #DFF1FE 100%);
+            color: var(--text-main);
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Tia nắng xuyên mặt nước lung linh ở góc trên (Underwater Light Rays) */
+        .sun-rays {
+            position: fixed;
+            top: -15%;
+            left: 10%;
+            width: 80vw;
+            height: 75vh;
+            pointer-events: none;
+            z-index: 1;
+            background: repeating-linear-gradient(
+                105deg,
+                rgba(255, 255, 255, 0.42) 0%,
+                rgba(255, 255, 255, 0.05) 6%,
+                transparent 12%,
+                rgba(182, 224, 254, 0.25) 18%,
+                transparent 24%
+            );
+            filter: blur(18px);
+            transform-origin: top center;
+            animation: raySway 9s ease-in-out infinite alternate;
+        }
+
+        @keyframes raySway {
+            0% { transform: skewX(-6deg) scaleY(0.96); opacity: 0.7; }
+            100% { transform: skewX(6deg) scaleY(1.04); opacity: 1; }
+        }
+
+        /* Hiệu ứng chữ đổi màu ánh nắng chiếu mặt nước (Animated Gradient Text) */
+        .ocean-gradient-text {
+            background: linear-gradient(90deg, #0B4F8A, #00A8E8, #38B6FF, #00B4D8, #0096C7, #0B4F8A);
+            background-size: 320% 320%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: waterShimmer 3.8s ease-in-out infinite;
+            filter: drop-shadow(0 3px 12px rgba(56, 182, 255, 0.28));
+        }
+
+        /* Hiệu ứng chữ đổi màu lấp lánh cho từ khóa & tiêu đề phụ */
+        .shimmer-keyword {
+            background: linear-gradient(90deg, #0B4F8A, #2684D6, #00B4D8, #38B6FF, #0B4F8A);
+            background-size: 250% 250%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: waterShimmer 3.2s linear infinite;
+            font-weight: 800;
+        }
+
+        @keyframes waterShimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Sân khấu trình chiếu 100vw x 100vh */
+        #presentation-stage {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            z-index: 15;
+        }
+
+        /* Cấu trúc từng Slide & hiệu ứng chuyển cảnh mượt như dòng nước */
+        .slide {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            padding: 1.1rem 2.25rem 5.4rem 2.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translateX(48px) scale(0.985);
+            transition:
+                opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 0.6s;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateX(0) scale(1);
+            z-index: 20;
+        }
+
+        .slide.prev {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: translateX(-48px) scale(0.985);
+        }
+
+        /* Hiệu ứng xuất hiện thác nước khi vào slide */
+        .slide.active .animate-enter {
+            animation: floatUpEnter 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        .slide.active .delay-1 { animation-delay: 0.08s; }
+        .slide.active .delay-2 { animation-delay: 0.16s; }
+        .slide.active .delay-3 { animation-delay: 0.24s; }
+        .slide.active .delay-4 { animation-delay: 0.32s; }
+
+        @keyframes floatUpEnter {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Thẻ nội dung Đại dương kính mờ (Glassmorphism Ocean Card) */
+        .ocean-card {
+            position: relative;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1.5px solid var(--card-border);
+            border-radius: 1.25rem;
+            box-shadow: 0 10px 28px -6px rgba(11, 79, 138, 0.09);
+            overflow: hidden;
+            transition:
+                transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.38s ease,
+                filter 0.38s ease,
+                box-shadow 0.38s ease,
+                border-color 0.38s ease;
+        }
+
+        /* Ánh sáng lướt nhẹ qua thẻ khi di chuột */
+        .ocean-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 75%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            transform: skewX(-22deg);
+            transition: left 0.7s ease;
+            pointer-events: none;
+        }
+
+        .ocean-card:hover::before {
+            left: 140%;
+        }
+
+        /* Hiệu ứng Spotlight: Làm nổi bật thẻ đang hover/click, làm dịu các thẻ còn lại */
+        .spotlight-group.has-focus .spotlight-item {
+            opacity: 0.42;
+            filter: brightness(0.88);
+            transform: scale(0.99);
+        }
+
+        .spotlight-group.has-focus .spotlight-item.is-focused {
+            opacity: 1 !important;
+            filter: brightness(1.03) !important;
+            transform: scale(1.02) !important;
+            border-color: #2684D6 !important;
+            box-shadow:
+                0 18px 38px -8px rgba(38, 132, 214, 0.28),
+                0 0 0 3px rgba(56, 182, 255, 0.25) !important;
+            z-index: 30;
+        }
+
+        .spotlight-item {
+            cursor: pointer;
+        }
+
+        /* Huy hiệu icon tròn pastel */
+        .card-badge-icon {
+            width: 2.35rem;
+            height: 2.35rem;
+            border-radius: 0.75rem;
+            background: linear-gradient(135deg, #E1F2FE, #B6E0FE);
+            color: #0B4F8A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 3px 8px rgba(38, 132, 214, 0.16);
+        }
+
+        /* Khung chứa ảnh minh họa & nút tải ảnh */
+        .image-dropzone {
+            background: linear-gradient(135deg, rgba(240, 248, 255, 0.92), rgba(225, 242, 254, 0.75));
+            border: 2px dashed #7CC4FA;
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .image-dropzone:hover {
+            border-color: #2684D6;
+            background: rgba(225, 242, 254, 0.95);
+            box-shadow: 0 6px 18px rgba(38, 132, 214, 0.16);
+        }
+
+        /* Bảng dữ liệu tông xanh đại dương pastel */
+        .ocean-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1.5px solid #B6E0FE;
+        }
+
+        .ocean-table th {
+            background: linear-gradient(90deg, #0B4F8A, #2684D6);
+            color: #FFFFFF;
+            font-weight: 700;
+            padding: 0.7rem 0.9rem;
+            text-align: left;
+            font-size: 1rem;
+        }
+
+        .ocean-table td {
+            padding: 0.7rem 0.9rem;
+            border-top: 1px solid #B6E0FE;
+            background: rgba(255, 255, 255, 0.92);
+            font-size: 1rem;
+            color: #083358;
+        }
+
+        .ocean-table tr:nth-child(even) td {
+            background: #F0F8FF;
+        }
+
+        /* Hiệu ứng Bong bóng nước bay lơ lửng */
+        #bubbles-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 4;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -40px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.85), rgba(182, 224, 254, 0.3));
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            box-shadow: inset 0 0 6px rgba(56, 182, 255, 0.25);
+            animation: floatBubble linear infinite;
+        }
+
+        @keyframes floatBubble {
+            0% {
+                transform: translateY(0) translateX(0) scale(0.85);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.75;
+            }
+            50% {
+                transform: translateY(-48vh) translateX(14px) scale(1);
+            }
+            85% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-105vh) translateX(-12px) scale(1.08);
+                opacity: 0;
+            }
+        }
+
+        /* Đàn cá nhỏ bơi ngang tầng trên */
+        .fish-school {
+            position: fixed;
+            top: 5.5rem;
+            left: -160px;
+            pointer-events: none;
+            z-index: 6;
+            opacity: 0.55;
+            animation: swimAcrossTop 28s linear infinite;
+        }
+
+        @keyframes swimAcrossTop {
+            0% { transform: translateX(0) translateY(0); }
+            25% { transform: translateX(32vw) translateY(-10px); }
+            50% { transform: translateX(65vw) translateY(6px); }
+            75% { transform: translateX(92vw) translateY(-8px); }
+            100% { transform: translateX(calc(100vw + 200px)) translateY(0); }
+        }
+
+        /* Sứa biển pastel bồng bềnh ở góc trên trái (Safe-zone) */
+        .jellyfish-float {
+            position: fixed;
+            top: 4.5rem;
+            left: 1rem;
+            width: 52px;
+            height: 70px;
+            pointer-events: none;
+            z-index: 6;
+            opacity: 0.72;
+            animation: jellyBob 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes jellyBob {
+            0% { transform: translateY(0px) rotate(-4deg); }
+            100% { transform: translateY(14px) rotate(5deg); }
+        }
+
+        /* Cá nhiệt đới bơi dọc rạn san hô dưới đáy (Safe-zone) */
+        .aquarium-fish-bottom {
+            position: fixed;
+            bottom: 34px;
+            right: -150px;
+            pointer-events: none;
+            z-index: 8;
+            opacity: 0.85;
+            animation: swimBottomLeft 24s linear infinite;
+        }
+
+        @keyframes swimBottomLeft {
+            0% { transform: translateX(0) translateY(0); }
+            30% { transform: translateX(-35vw) translateY(-6px); }
+            65% { transform: translateX(-70vw) translateY(4px); }
+            100% { transform: translateX(calc(-100vw - 200px)) translateY(-2px); }
+        }
+
+        /* Rạn san hô, sao biển & rong biển dọc đáy thủy cung (Safe-zone) */
+        .coral-reef-floor {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 68px;
+            pointer-events: none;
+            z-index: 7;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 0 1.25rem;
+        }
+
+        .coral-cluster {
+            transform-origin: bottom center;
+            animation: coralSway 5.5s ease-in-out infinite alternate;
+        }
+        .coral-cluster.delay-sway {
+            animation-delay: -2.2s;
+        }
+
+        @keyframes coralSway {
+            0% { transform: skewX(-2deg); }
+            100% { transform: skewX(2.5deg); }
+        }
+
+        /* Rong biển trang trí 2 góc đáy màn hình */
+        .seaweed-decor {
+            position: fixed;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 6;
+            opacity: 0.72;
+            transform-origin: bottom center;
+            animation: seaweedWave 6.5s ease-in-out infinite alternate;
+        }
+        .seaweed-left { left: 0.5rem; width: 72px; height: 95px; }
+        .seaweed-right { right: 0.5rem; width: 62px; height: 85px; animation-delay: -2.5s; }
+
+        @keyframes seaweedWave {
+            0% { transform: rotate(-4deg); }
+            100% { transform: rotate(5deg); }
+        }
+
+        /* Linh vật Cá Heo con Pastel ở Safe-Zone */
+        #ocean-mascot {
+            position: fixed;
+            bottom: 24px;
+            left: 6%;
+            width: 112px;
+            height: 88px;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(75px) rotate(-14deg);
+        }
+
+        .mascot-swim-action {
+            animation: dolphinPeekAndDive 7.5s cubic-bezier(0.34, 1.36, 0.64, 1) forwards;
+        }
+
+        @keyframes dolphinPeekAndDive {
+            0% {
+                opacity: 0;
+                transform: translateY(75px) translateX(-25px) rotate(-18deg);
+            }
+            22% {
+                opacity: 1;
+                transform: translateY(-6px) translateX(10px) rotate(4deg);
+            }
+            45% {
+                opacity: 1;
+                transform: translateY(-14px) translateX(42px) rotate(-2deg);
+            }
+            72% {
+                opacity: 1;
+                transform: translateY(-4px) translateX(75px) rotate(8deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(80px) translateX(110px) rotate(22deg);
+            }
+        }
+
+        /* Hiệu ứng Sóng biển SVG đa lớp ở mép dưới màn hình */
+        .ocean-waves-wrapper {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 66px;
+            pointer-events: none;
+            z-index: 9;
+            overflow: hidden;
+        }
+
+        .waves-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .parallax > use {
+            animation: moveForever 25s cubic-bezier(.55, .5, .45, .5) infinite;
+        }
+        .parallax > use:nth-child(1) {
+            animation-delay: -2s;
+            animation-duration: 9s;
+        }
+        .parallax > use:nth-child(2) {
+            animation-delay: -3s;
+            animation-duration: 13s;
+        }
+        .parallax > use:nth-child(3) {
+            animation-delay: -4s;
+            animation-duration: 17s;
+        }
+        .parallax > use:nth-child(4) {
+            animation-delay: -5s;
+            animation-duration: 22s;
+        }
+
+        @keyframes moveForever {
+            0% { transform: translate3d(-90px, 0, 0); }
+            100% { transform: translate3d(85px, 0, 0); }
+        }
+
+        /* Thanh tiến trình sóng nước ở đáy màn hình */
+        .progress-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(182, 224, 254, 0.45);
+            z-index: 60;
+        }
+
+        .progress-wave-bar {
+            height: 100%;
+            width: 11.11%;
+            background: linear-gradient(90deg, #2684D6, #00A8E8, #0B4F8A);
+            border-radius: 0 999px 999px 0;
+            transition: width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 0 12px rgba(0, 168, 232, 0.65);
+        }
+
+        /* Hiệu ứng Vòng sóng nước tương tác khi di chuột & click (Interactive Water Ripple) */
+        #cursor-glow {
+            position: fixed;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(56, 182, 255, 0.16) 0%, rgba(182, 224, 254, 0.05) 45%, transparent 70%);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            transition: opacity 0.3s ease;
+        }
+
+        .click-ripple {
+            position: fixed;
+            border-radius: 50%;
+            border: 2px solid rgba(38, 132, 214, 0.65);
+            background: radial-gradient(circle, rgba(182, 224, 254, 0.35), transparent 70%);
+            pointer-events: none;
+            z-index: 60;
+            transform: translate(-50%, -50%) scale(0);
+            animation: rippleExpand 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes rippleExpand {
+            0% { width: 10px; height: 10px; opacity: 0.9; transform: translate(-50%, -50%) scale(0.2); }
+            100% { width: 140px; height: 140px; opacity: 0; transform: translate(-50%, -50%) scale(1.4); }
+        }
+
+        /* Chuyển động lơ lửng nhẹ cho minh họa SVG trong khung */
+        .svg-float-slow {
+            animation: svgFloat 4.5s ease-in-out infinite alternate;
+        }
+        @keyframes svgFloat {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-6px); }
+        }
+
+        @media (max-width: 1024px) {
+            .slide {
+                padding: 1rem 1.25rem 5rem 1.25rem;
+                overflow-y: auto;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ánh sáng nước đi theo con trỏ chuột -->
+    <div id="cursor-glow" aria-hidden="true"></div>
+
+    <!-- Tia nắng rọi xuống mặt nước -->
+    <div class="sun-rays" aria-hidden="true"></div>
+
+    <!-- Hiệu ứng Bong bóng nước bay lơ lửng -->
+    <div id="bubbles-container" aria-hidden="true"></div>
+
+    <!-- Đàn cá nhỏ pastel bơi ngang tầng trên -->
+    <div class="fish-school" aria-hidden="true">
+        <svg width="135" height="48" viewBox="0 0 135 48" fill="none">
+            <path d="M18 14C25 14 31 18 34 21L40 16V26L34 21C31 24 25 28 18 28C11 28 6 24 4 21C6 18 11 14 18 14Z" fill="#7CC4FA"/>
+            <circle cx="11" cy="20" r="1.5" fill="#0B4F8A"/>
+            <path d="M58 8C63 8 68 11 70 13L75 9V17L70 13C68 15 63 18 58 18C53 18 49 15 47 13C49 11 53 8 58 8Z" fill="#38B6FF"/>
+            <circle cx="53" cy="12" r="1.2" fill="#0B4F8A"/>
+            <path d="M84 24C89 24 94 27 96 29L101 25V33L96 29C94 31 89 34 84 34C79 34 75 31 73 29C75 27 79 24 84 24Z" fill="#2684D6"/>
+            <circle cx="79" cy="28" r="1.2" fill="#FFFFFF"/>
+            <path d="M112 12C116 12 120 14 122 16L126 13V19L122 16C120 18 116 20 112 20C108 20 105 18 103 16C105 14 108 12 112 12Z" fill="#90CDF4"/>
+        </svg>
+    </div>
+
+    <!-- Sứa biển pastel bồng bềnh ở góc rìa trên trái (Safe-zone) -->
+    <div class="jellyfish-float" aria-hidden="true">
+        <svg viewBox="0 0 60 80" fill="none">
+            <path d="M12 32C12 17 20 8 30 8C40 8 48 17 48 32C42 35 36 33 30 35C24 33 18 35 12 32Z" fill="url(#jellyGrad)" opacity="0.85"/>
+            <path d="M20 34C18 46 23 56 19 68" stroke="#7CC4FA" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M30 35C32 48 27 60 31 74" stroke="#38B6FF" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M40 34C42 46 37 56 41 68" stroke="#7CC4FA" stroke-width="2.2" stroke-linecap="round"/>
+            <circle cx="24" cy="23" r="2" fill="#0B4F8A" opacity="0.7"/>
+            <circle cx="36" cy="23" r="2" fill="#0B4F8A" opacity="0.7"/>
+            <defs>
+                <linearGradient id="jellyGrad" x1="30" y1="8" x2="30" y2="35" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#B6E0FE"/>
+                    <stop offset="1" stop-color="#38B6FF"/>
+                </linearGradient>
+            </defs>
+        </svg>
+    </div>
+
+    <!-- Cá nhiệt đới pastel bơi lội dọc rạn san hô dưới đáy (Safe-zone) -->
+    <div class="aquarium-fish-bottom" aria-hidden="true">
+        <svg width="130" height="46" viewBox="0 0 130 46" fill="none">
+            <path d="M26 14C17 14 10 19 6 23C10 27 17 32 26 32C34 32 40 28 43 25L50 30V16L43 21C40 18 34 14 26 14Z" fill="#2684D6"/>
+            <path d="M22 14.5V31.5M30 15V31" stroke="#E1F2FE" stroke-width="2.5"/>
+            <circle cx="14" cy="21" r="2" fill="#FFFFFF"/>
+            <circle cx="13.5" cy="21" r="1" fill="#083358"/>
+            <path d="M84 22C77 22 72 25 69 28C72 31 77 34 84 34C90 34 94 31 96 29L101 33V23L96 27C94 25 90 22 84 22Z" fill="#38B6FF"/>
+            <circle cx="75" cy="27" r="1.5" fill="#0B4F8A"/>
+            <circle cx="56" cy="14" r="2.2" fill="#B6E0FE"/>
+            <circle cx="62" cy="8" r="1.5" fill="#7CC4FA"/>
+        </svg>
+    </div>
+
+    <!-- Rạn san hô, Sao biển & Rong biển dọc đáy thủy cung (Safe-zone dưới 68px) -->
+    <div class="coral-reef-floor" aria-hidden="true">
+        <div class="coral-cluster w-36 h-16">
+            <svg viewBox="0 0 160 72" fill="none">
+                <path d="M20 72C17 52 28 42 22 24C17 12 25 4 20 0C15 10 9 20 14 34C18 46 10 58 13 72H20Z" fill="#7CC4FA"/>
+                <path d="M52 72V46C52 38 42 34 40 24C39 20 43 18 45 22C47 28 52 32 54 36V18C54 14 59 14 59 18V34C63 29 68 25 70 19C71 15 76 17 74 22C71 30 64 36 60 44V72H52Z" fill="#38B6FF" opacity="0.85"/>
+                <path d="M82 72C82 56 94 46 108 46C122 46 134 56 134 72H82Z" fill="#90CDF4"/>
+                <circle cx="98" cy="58" r="2.5" fill="#E1F2FE"/>
+                <circle cx="110" cy="54" r="3" fill="#E1F2FE"/>
+                <circle cx="120" cy="61" r="2.2" fill="#E1F2FE"/>
+                <path d="M144 56L146.5 61.5L152.5 62L148 66L149.2 71.8L144 68.8L138.8 71.8L140 66L135.5 62L141.5 61.5L144 56Z" fill="#2684D6"/>
+            </svg>
+        </div>
+
+        <div class="coral-cluster delay-sway w-32 h-14 hidden sm:block">
+            <svg viewBox="0 0 140 64" fill="none">
+                <path d="M35 64C35 48 48 38 62 38C76 38 89 48 89 64H35Z" fill="#B6E0FE"/>
+                <path d="M96 64V42C96 34 88 28 87 20C86 16 91 15 92 19C94 25 98 29 100 33V16C100 12 105 12 105 16V31C109 26 114 22 116 17C117 13 121 15 119 20C116 27 110 33 105 40V64H96Z" fill="#7CC4FA"/>
+                <path d="M22 50L24 54.5L29 55L25.2 58.2L26.2 63L22 60.5L17.8 63L18.8 58.2L15 55L20 54.5L22 50Z" fill="#38B6FF"/>
+            </svg>
+        </div>
+
+        <div class="coral-cluster w-32 h-14 mr-[230px] hidden md:block">
+            <svg viewBox="0 0 140 64" fill="none">
+                <path d="M28 64C25 46 35 36 30 20C25 8 33 2 28 0C23 8 18 18 22 30C26 42 18 52 21 64H28Z" fill="#38B6FF" opacity="0.75"/>
+                <path d="M46 64C44 50 52 40 48 26C44 15 50 8 46 5C42 12 38 22 41 34C44 44 38 54 40 64H46Z" fill="#7CC4FA"/>
+                <path d="M68 64C68 50 78 42 90 42C102 42 112 50 112 64H68Z" fill="#90CDF4"/>
+                <circle cx="84" cy="53" r="2.5" fill="#FFFFFF"/>
+                <circle cx="96" cy="53" r="2.5" fill="#FFFFFF"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- San hô & Rong biển trang trí 2 góc đáy màn hình -->
+    <div class="seaweed-decor seaweed-left" aria-hidden="true">
+        <svg viewBox="0 0 80 110" fill="none">
+            <path d="M25 110C22 85 35 72 28 50C22 30 34 15 26 4C20 18 12 32 18 52C23 70 12 88 16 110H25Z" fill="#7CC4FA"/>
+            <path d="M46 110C48 88 38 75 45 55C51 38 42 22 48 12C54 24 60 38 54 56C48 74 56 90 54 110H46Z" fill="#38B6FF" opacity="0.75"/>
+            <circle cx="28" cy="36" r="3" fill="#B6E0FE"/>
+            <circle cx="48" cy="48" r="2.5" fill="#B6E0FE"/>
+        </svg>
+    </div>
+    <div class="seaweed-decor seaweed-right" aria-hidden="true">
+        <svg viewBox="0 0 70 95" fill="none">
+            <path d="M35 95C32 74 44 62 38 42C32 25 42 12 35 3C28 15 22 28 28 45C33 60 24 76 27 95H35Z" fill="#90CDF4"/>
+            <path d="M52 95C54 78 46 66 52 50C57 36 50 22 55 14C60 24 64 36 59 52C54 66 60 80 58 95H52Z" fill="#7CC4FA" opacity="0.8"/>
+        </svg>
+    </div>
+
+    <!-- Linh vật Cá Heo con Pastel ở Safe-Zone -->
+    <div id="ocean-mascot" aria-hidden="true">
+        <svg viewBox="0 0 140 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="118" cy="24" r="4" fill="#B6E0FE" opacity="0.85"/>
+            <circle cx="126" cy="14" r="2.5" fill="#7CC4FA" opacity="0.9"/>
+            <path d="M58 34C54 18 66 12 74 26L68 38L58 34Z" fill="#2684D6"/>
+            <path d="M18 68C12 62 6 66 4 72C10 73 14 76 16 82C22 78 24 73 22 70C36 74 56 76 78 68C98 61 114 55 124 52C127 51 127 47 123 45C116 42 110 42 106 40C96 27 72 24 52 34C35 42 25 56 18 68Z" fill="url(#dolphinBody)"/>
+            <path d="M32 66C48 72 72 72 95 62C105 58 114 54 121 51C112 52 96 54 78 58C58 62 42 62 32 66Z" fill="#E1F2FE"/>
+            <path d="M68 58C64 70 72 78 80 72C82 66 78 60 74 57L68 58Z" fill="#0B4F8A"/>
+            <circle cx="98" cy="43" r="3.5" fill="#083358"/>
+            <circle cx="99.2" cy="41.8" r="1.2" fill="#FFFFFF"/>
+            <ellipse cx="92" cy="49" rx="4" ry="2.2" fill="#7CC4FA" opacity="0.75"/>
+            <path d="M107 48C111 50 116 49 119 47" stroke="#083358" stroke-width="1.8" stroke-linecap="round"/>
+            <defs>
+                <linearGradient id="dolphinBody" x1="15" y1="30" x2="120" y2="70" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#38B6FF"/>
+                    <stop offset="0.55" stop-color="#2684D6"/>
+                    <stop offset="1" stop-color="#0B4F8A"/>
+                </linearGradient>
+            </defs>
+        </svg>
+    </div>
+
+    <!-- Hiệu ứng Sóng biển SVG nhiều lớp ở mép dưới màn hình -->
+    <div class="ocean-waves-wrapper" aria-hidden="true">
+        <svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+            <defs>
+                <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+            </defs>
+            <g class="parallax">
+                <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(182, 224, 254, 0.5)" />
+                <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(124, 196, 250, 0.45)" />
+                <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(56, 182, 255, 0.35)" />
+                <use xlink:href="#gentle-wave" x="48" y="7" fill="rgba(38, 132, 214, 0.25)" />
+            </g>
+        </svg>
+    </div>
+
+    <!-- SÂN KHẤU THUYẾT TRÌNH CHÍNH (9 SLIDES) -->
+    <main id="presentation-stage">
+
+        <!-- =========================================================
+             SLIDE 1: TRANG BÌA (TITLE SLIDE)
+        ========================================================= -->
+        <section class="slide active" data-slide="1">
+            <div class="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Cột nội dung tiêu đề -->
+                <div class="lg:col-span-7 flex flex-col items-start text-left space-y-5 animate-enter">
+                    <div class="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-white/95 border border-[#B6E0FE] shadow-sm">
+                        <span class="w-3 h-3 rounded-full bg-[#2684D6] animate-ping"></span>
+                        <span class="text-[#0B4F8A] font-bold text-base tracking-wide uppercase">Chuyên đề Pháp luật • Giao diện Đại dương Pastel</span>
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-[54px] font-extrabold leading-[1.16] ocean-gradient-text tracking-tight">
+                        ĐIỀU 58. ÁP DỤNG VĂN BẢN QUY PHẠM PHÁP LUẬT
+                    </h1>
+
+                    <!-- Thanh trang trí sóng nhỏ -->
+                    <div class="flex items-center gap-3">
+                        <div class="w-24 h-2 rounded-full bg-gradient-to-r from-[#0B4F8A] via-[#2684D6] to-[#38B6FF]"></div>
+                        <div class="w-6 h-2 rounded-full bg-[#7CC4FA]"></div>
+                        <div class="w-3 h-2 rounded-full bg-[#B6E0FE]"></div>
+                    </div>
+
+                    <!-- Dải 6 mốc khoản trang trí trực quan -->
+                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-2.5 w-full max-w-xl pt-1">
+                        <button onclick="goToSlide(1)" class="px-3 py-2 rounded-xl bg-white/90 border border-[#B6E0FE] text-center hover:bg-[#E1F2FE] hover:-translate-y-0.5 transition cursor-pointer">
+                            <span class="block text-xs font-bold text-[#2684D6]">Khoản 1</span>
+                            <span class="block text-sm font-extrabold text-[#0B4F8A]">Hiệu lực</span>
+                        </button>
+                        <button onclick="goToSlide(2)" class="px-3 py-2 rounded-xl bg-white/90 border border-[#B6E0FE] text-center hover:bg-[#E1F2FE] hover:-translate-y-0.5 transition cursor-pointer">
+                            <span class="block text-xs font-bold text-[#2684D6]">Khoản 2</span>
+                            <span class="block text-sm font-extrabold text-[#0B4F8A]">Hồi tố</span>
+                        </button>
+                        <button onclick="goToSlide(3)" class="px-3 py-2 rounded-xl bg-white/90 border border-[#B6E0FE] text-center hover:bg-[#E1F2FE] hover:-translate-y-0.5 transition cursor-pointer">
+                            <span class="block text-xs font-bold text-[#2684D6]">Khoản 3</span>
+                            <span class="block text-sm font-extrabold text-[#0B4F8A]">Khác cấp</span>
+                        </button>
+                        <button onclick="goToSlide(4)" class="px-3 py-2 rounded-xl bg-white/90 border border-[#B6E0FE] text-center hover:bg-[#E1F2FE] hover:-translate-y-0.5 transition cursor-pointer">
+                            <span class="block text-xs font-bold text-[#2684D6]">Khoản 4</span>
+                            <span class="block text-sm font-extrabold text-[#0B4F8A]">Cùng cấp</span>
+                        </button>
+                        <button onclick="goToSlide(5)" class="px-3 py-2 rounded-xl bg-white/90 border border-[#B6E0FE] text-center hover:bg-[#E1F2FE] hover:-translate-y-0.5 transition cursor-pointer">
+                            <span class="block text-xs font-bold text-[#2684D6]">Khoản 5</span>
+                            <span class="block text-sm font-extrabold text-[#0B4F8A]">ĐƯQT</span>
+                        </button>
+                        <button onclick="goToSlide(7)" class="px-3 py-2 rounded-xl bg-white/90 border border-[#B6E0FE] text-center hover:bg-[#E1F2FE] hover:-translate-y-0.5 transition cursor-pointer">
+                            <span class="block text-xs font-bold text-[#2684D6]">Khoản 6</span>
+                            <span class="block text-sm font-extrabold text-[#0B4F8A]">Quốc hội</span>
+                        </button>
+                    </div>
+
+                    <div class="pt-1">
+                        <button onclick="nextSlide()" class="group inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-[#0B4F8A] to-[#2684D6] text-white font-bold text-xl shadow-lg shadow-[#2684D6]/25 hover:shadow-xl hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 cursor-pointer">
+                            <span>Bắt đầu thuyết trình</span>
+                            <svg class="w-6 h-6 transform group-hover:translate-x-1.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Cột hình ảnh minh họa trang bìa (Tự động minh họa SVG Đại dương & Công lý) -->
+                <div class="lg:col-span-5 animate-enter delay-1">
+                    <div class="ocean-card p-4">
+                        <div class="image-dropzone aspect-[4/3] w-full flex flex-col items-center justify-center p-3 text-center cursor-pointer group" onclick="triggerImageUpload('img-slide-1')" title="Click nếu muốn thay bằng ảnh từ máy tính">
+                            <img id="img-slide-1" src="" alt="Minh họa chủ đề" class="hidden w-full h-full object-cover rounded-xl" />
+                            <div id="placeholder-img-slide-1" class="w-full h-full flex flex-col items-center justify-center relative">
+                                <svg class="w-full h-full max-h-[250px] svg-float-slow" viewBox="0 0 360 250" fill="none">
+                                    <circle cx="180" cy="125" r="95" fill="url(#coverCircle)" opacity="0.55"/>
+                                    <circle cx="180" cy="125" r="72" stroke="#38B6FF" stroke-width="2" stroke-dasharray="6 6"/>
+                                    <path d="M95 155C125 142 155 145 180 160C205 145 235 142 265 155V192C235 180 205 182 180 196C155 182 125 180 95 192V155Z" fill="#FFFFFF" stroke="#2684D6" stroke-width="3"/>
+                                    <path d="M180 160V196" stroke="#0B4F8A" stroke-width="3"/>
+                                    <path d="M180 58V138M155 138H205" stroke="#0B4F8A" stroke-width="4" stroke-linecap="round"/>
+                                    <path d="M132 82H228" stroke="#2684D6" stroke-width="4" stroke-linecap="round"/>
+                                    <circle cx="180" cy="54" r="7" fill="#38B6FF" stroke="#0B4F8A" stroke-width="2.5"/>
+                                    <path d="M132 82L118 112H146L132 82Z" stroke="#38B6FF" stroke-width="2" fill="#E1F2FE"/>
+                                    <path d="M114 112C114 120 150 120 150 112H114Z" fill="#2684D6"/>
+                                    <path d="M228 82L214 112H242L228 82Z" stroke="#38B6FF" stroke-width="2" fill="#E1F2FE"/>
+                                    <path d="M210 112C210 120 246 120 246 112H210Z" fill="#2684D6"/>
+                                    <path d="M268 95C276 82 294 84 300 94C293 95 289 98 287 104C281 100 274 98 268 95Z" fill="#38B6FF"/>
+                                    <circle cx="95" cy="88" r="5" fill="#B6E0FE"/>
+                                    <circle cx="82" cy="105" r="3.5" fill="#7CC4FA"/>
+                                    <defs>
+                                        <radialGradient id="coverCircle" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(180 125) scale(95)">
+                                            <stop stop-color="#FFFFFF"/>
+                                            <stop offset="1" stop-color="#B6E0FE"/>
+                                        </radialGradient>
+                                    </defs>
+                                </svg>
+                                <span class="absolute bottom-1 right-2 text-[11px] font-semibold text-[#2684D6] bg-white/90 px-2.5 py-0.5 rounded-full border border-[#B6E0FE] opacity-80 group-hover:opacity-100">Đổi ảnh</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 2: KHOẢN 1 - THỜI ĐIỂM BẮT ĐẦU CÓ HIỆU LỰC
+        ========================================================= -->
+        <section class="slide" data-slide="2">
+            <div class="max-w-7xl w-full mx-auto flex flex-col gap-4">
+                <header class="bg-white/85 backdrop-blur-md border border-[#B6E0FE] rounded-2xl px-6 py-3 shadow-sm flex items-center gap-4 animate-enter">
+                    <span class="w-11 h-11 rounded-xl bg-gradient-to-br from-[#0B4F8A] to-[#2684D6] text-white font-extrabold text-xl flex items-center justify-center shrink-0 shadow">K1</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold ocean-gradient-text leading-snug">
+                        1. Văn bản quy phạm pháp luật được áp dụng từ thời điểm bắt đầu có hiệu lực.
+                    </h2>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 spotlight-group items-stretch">
+                    <!-- Ô 1 - Nội dung quy định -->
+                    <div class="lg:col-span-5 ocean-card spotlight-item p-5 flex flex-col justify-between animate-enter delay-1">
+                        <div>
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="card-badge-icon">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-[#0B4F8A]">Nội dung quy định</h3>
+                            </div>
+                            <ul class="space-y-3 text-lg leading-relaxed text-[#083358]">
+                                <li class="flex items-start gap-3">
+                                    <span class="mt-2 w-2.5 h-2.5 rounded-full bg-[#2684D6] shrink-0"></span>
+                                    <span>VBQPPL được áp dụng từ thời điểm bắt đầu có hiệu lực.</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="mt-2 w-2.5 h-2.5 rounded-full bg-[#2684D6] shrink-0"></span>
+                                    <span>Hành vi, sự kiện xảy ra vào thời điểm nào thì áp dụng pháp luật đang có hiệu lực tại thời điểm đó.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Khu vực ảnh Khoản 1 (Tự động minh họa SVG Thẻ Căn Cước) -->
+                        <div class="mt-3">
+                            <div class="image-dropzone h-32 w-full flex flex-col items-center justify-center p-2 text-center cursor-pointer group" onclick="event.stopPropagation(); triggerImageUpload('img-slide-2')" title="Click nếu muốn thay bằng ảnh từ máy tính">
+                                <img id="img-slide-2" src="" alt="Minh họa Khoản 1" class="hidden w-full h-full object-cover rounded-xl" />
+                                <div id="placeholder-img-slide-2" class="w-full h-full flex items-center justify-center relative">
+                                    <svg class="h-full max-h-[108px] svg-float-slow" viewBox="0 0 320 110" fill="none">
+                                        <rect x="24" y="22" width="120" height="72" rx="10" fill="#E1F2FE" stroke="#7CC4FA" stroke-width="2"/>
+                                        <rect x="34" y="34" width="24" height="30" rx="4" fill="#90CDF4"/>
+                                        <rect x="66" y="36" width="64" height="7" rx="3.5" fill="#7CC4FA"/>
+                                        <rect x="66" y="49" width="48" height="6" rx="3" fill="#B6E0FE"/>
+                                        <text x="34" y="83" fill="#0B4F8A" font-size="9" font-weight="700">CCCD 2014 (30/06)</text>
+                                        <path d="M150 56H170M164 50L170 56L164 62" stroke="#2684D6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <rect x="176" y="14" width="126" height="78" rx="11" fill="#FFFFFF" stroke="#0B4F8A" stroke-width="2.5"/>
+                                        <rect x="176" y="14" width="126" height="18" rx="6" fill="#2684D6"/>
+                                        <rect x="186" y="40" width="26" height="32" rx="5" fill="#B6E0FE" stroke="#2684D6" stroke-width="1.5"/>
+                                        <circle cx="199" cy="51" r="5" fill="#0B4F8A"/>
+                                        <path d="M191 66C191 61 207 61 207 66" fill="#0B4F8A"/>
+                                        <rect x="220" y="42" width="70" height="7" rx="3.5" fill="#0B4F8A"/>
+                                        <rect x="220" y="54" width="52" height="6" rx="3" fill="#38B6FF"/>
+                                        <text x="220" y="75" fill="#0B4F8A" font-size="9.5" font-weight="800">THẺ CĂN CƯỚC</text>
+                                    </svg>
+                                    <span class="absolute bottom-1 right-2 text-[10px] text-[#2684D6] bg-white/90 px-2 py-0.5 rounded-full border border-[#B6E0FE] opacity-75 group-hover:opacity-100">Đổi ảnh</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ô 2 - Ví dụ: Thay đổi tên thẻ Căn cước -->
+                    <div class="lg:col-span-7 ocean-card spotlight-item p-5 flex flex-col justify-center animate-enter delay-2">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="card-badge-icon">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-[#0B4F8A]">Ví dụ: Thay đổi tên thẻ Căn cước</h3>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="ocean-table">
+                                <thead>
+                                    <tr>
+                                        <th>Thời điểm làm thủ tục</th>
+                                        <th>Văn bản áp dụng</th>
+                                        <th>Tên thẻ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="font-semibold">30/06/2024</td>
+                                        <td>Luật Căn cước công dân 2014</td>
+                                        <td class="font-bold text-[#0B4F8A]">Thẻ Căn cước công dân</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-semibold">01/07/2024</td>
+                                        <td>Luật Căn cước 2023</td>
+                                        <td class="font-bold text-[#2684D6]">Thẻ Căn cước</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-4 p-3.5 rounded-xl bg-gradient-to-r from-[#E1F2FE] to-[#F0F8FF] border border-[#B6E0FE] flex items-center gap-3">
+                            <svg class="w-6 h-6 text-[#2684D6] shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <p class="text-lg font-semibold text-[#0B4F8A]">
+                                Luật Căn cước 2023 có hiệu lực từ ngày 01/07/2024.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 3: KHOẢN 2 - ÁP DỤNG THEO THỜI ĐIỂM XẢY RA HÀNH VI & HIỆU LỰC TRỞ VỀ TRƯỚC
+        ========================================================= -->
+        <section class="slide" data-slide="3">
+            <div class="max-w-7xl w-full mx-auto flex flex-col gap-4">
+                <header class="bg-white/85 backdrop-blur-md border border-[#B6E0FE] rounded-2xl px-6 py-3 shadow-sm flex items-center gap-4 animate-enter">
+                    <span class="w-11 h-11 rounded-xl bg-gradient-to-br from-[#0B4F8A] to-[#2684D6] text-white font-extrabold text-xl flex items-center justify-center shrink-0 shadow">K2</span>
+                    <h2 class="text-xl sm:text-2xl lg:text-[26px] font-extrabold ocean-gradient-text leading-snug">
+                        2. Văn bản quy phạm pháp luật được áp dụng đối với hành vi, sự kiện xảy ra tại thời điểm mà văn bản đó đang có hiệu lực. Trường hợp văn bản quy phạm pháp luật có quy định hiệu lực trở về trước thì áp dụng theo quy định đó.
+                    </h2>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 spotlight-group items-stretch">
+                    <!-- Ô 1 -->
+                    <div class="ocean-card spotlight-item p-5 flex flex-col animate-enter delay-1">
+                        <div class="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-[#E1F2FE] text-[#0B4F8A] font-bold text-lg mb-3 border border-[#B6E0FE]">
+                            <svg class="w-5 h-5 shrink-0 text-[#2684D6]" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>Trường hợp 1: Áp dụng văn bản đang có hiệu lực</span>
+                        </div>
+                        <ul class="space-y-2.5 text-lg leading-snug text-[#083358]">
+                            <li class="flex items-start gap-2.5">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Căn cứ vào thời điểm hành vi, sự kiện xảy ra để xác định văn bản áp dụng.</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Thời điểm phát hiện hoặc xử lý vi phạm sau đó không làm thay đổi văn bản áp dụng.</span>
+                            </li>
+                            <li class="p-3 rounded-xl bg-[#F0F8FF] border border-[#B6E0FE] text-base leading-relaxed">
+                                <span class="font-bold text-[#0B4F8A]">Ví dụ:</span> Vi phạm ngày 28/12/2025, phát hiện ngày 05/01/2026 → Áp dụng quy định có hiệu lực ngày 28/12/2025.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Ô 2 -->
+                    <div class="ocean-card spotlight-item p-5 flex flex-col animate-enter delay-2">
+                        <div class="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-[#E1F2FE] text-[#0B4F8A] font-bold text-lg mb-3 border border-[#B6E0FE]">
+                            <svg class="w-5 h-5 shrink-0 text-[#2684D6]" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z"/></svg>
+                            <span>Trường hợp 2: Áp dụng văn bản có hiệu lực trở về trước (hồi tố)</span>
+                        </div>
+                        <ul class="space-y-2.5 text-lg leading-snug text-[#083358]">
+                            <li class="flex items-start gap-2.5">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Là ngoại lệ của nguyên tắc không hồi tố.</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Chỉ áp dụng khi văn bản có quy định về hiệu lực trở về trước và đáp ứng điều kiện luật định.</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Trong pháp luật hình sự: Quy định có lợi cho người phạm tội có thể được áp dụng hồi tố; không hồi tố quy định bất lợi.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Ô 3 -->
+                    <div class="ocean-card spotlight-item p-5 flex flex-col justify-between bg-gradient-to-b from-white to-[#F0F8FF] animate-enter delay-3">
+                        <div>
+                            <div class="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#0B4F8A] to-[#2684D6] text-white font-bold text-lg mb-4">
+                                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                <span>Ý nghĩa</span>
+                            </div>
+                            <p class="text-xl leading-relaxed font-medium text-[#083358]">
+                                Bảo đảm tính ổn định pháp luật, bảo vệ quyền lợi hợp pháp và thể hiện tính nhân đạo.
+                            </p>
+                        </div>
+                        <div class="mt-4 flex items-center justify-between border-t border-[#B6E0FE] pt-3">
+                            <span class="text-sm font-bold text-[#2684D6] uppercase tracking-wider">Giá trị cốt lõi</span>
+                            <svg class="w-12 h-12 text-[#38B6FF] opacity-60" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm-1.06 13.54L7.4 12l1.41-1.41 2.12 2.12 4.24-4.24 1.41 1.41-5.64 5.66z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 4: KHOẢN 3 - XUNG ĐỘT VĂN BẢN KHÁC CẤP HIỆU LỰC
+        ========================================================= -->
+        <section class="slide" data-slide="4">
+            <div class="max-w-7xl w-full mx-auto flex flex-col gap-3.5">
+                <header class="bg-white/85 backdrop-blur-md border border-[#B6E0FE] rounded-2xl px-6 py-2.5 shadow-sm flex items-center gap-4 animate-enter">
+                    <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0B4F8A] to-[#2684D6] text-white font-extrabold text-lg flex items-center justify-center shrink-0 shadow">K3</span>
+                    <h2 class="text-xl sm:text-2xl font-extrabold ocean-gradient-text leading-snug">
+                        3. Trường hợp các văn bản quy phạm pháp luật có quy định khác nhau về cùng một vấn đề thì áp dụng văn bản có hiệu lực pháp lý cao hơn.
+                    </h2>
+                </header>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 spotlight-group">
+                    <!-- Ô 1 - Nguyên tắc -->
+                    <div class="ocean-card spotlight-item p-4 flex flex-col justify-center animate-enter delay-1">
+                        <h3 class="text-lg font-bold text-[#0B4F8A] mb-2 flex items-center gap-2.5">
+                            <span class="card-badge-icon !w-8 !h-8">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
+                            </span>
+                            <span>Nguyên tắc</span>
+                        </h3>
+                        <ul class="space-y-1.5 text-lg leading-snug text-[#083358]">
+                            <li class="flex items-start gap-2">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Khi các VBQPPL quy định khác nhau về cùng một vấn đề → Ưu tiên áp dụng văn bản có hiệu lực pháp lý cao hơn.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Bảo đảm tính thứ bậc và thống nhất của hệ thống pháp luật.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Ô 2 - Dẫn chứng -->
+                    <div class="ocean-card spotlight-item p-4 flex flex-col justify-center animate-enter delay-2">
+                        <h3 class="text-lg font-bold text-[#0B4F8A] mb-2 flex items-center gap-2.5">
+                            <span class="card-badge-icon !w-8 !h-8">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            </span>
+                            <span>Dẫn chứng: Vụ việc tự đặt điều kiện kinh doanh đối với sửa chữa xe đạp (2015)</span>
+                        </h3>
+                        <ul class="space-y-1.5 text-lg leading-snug text-[#083358]">
+                            <li class="flex items-start gap-2">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Bộ Tư pháp phát hiện 20 văn bản địa phương có nội dung không phù hợp pháp luật.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Một số địa phương tự đặt điều kiện kinh doanh đối với hoạt động sửa chữa ô tô, mô tô, xe đạp và biểu diễn ca Huế.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Ô 3 - Phân tích & Văn bản được ưu tiên -->
+                    <div class="ocean-card spotlight-item p-4 flex flex-col justify-center animate-enter delay-3">
+                        <h3 class="text-lg font-bold text-[#0B4F8A] mb-2 flex items-center gap-2.5">
+                            <span class="card-badge-icon !w-8 !h-8">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                            </span>
+                            <span>Phân tích & Văn bản được ưu tiên</span>
+                        </h3>
+                        <ul class="space-y-1.5 text-base lg:text-[17px] leading-snug text-[#083358]">
+                            <li class="flex items-start gap-2">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Luật Doanh nghiệp 2005: UBND các cấp không được tự đặt ra ngành, nghề kinh doanh có điều kiện và điều kiện kinh doanh.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Văn bản địa phương tự đặt thêm điều kiện → Trái với Luật Doanh nghiệp.</span>
+                            </li>
+                            <li class="p-2 rounded-xl bg-[#E1F2FE] border border-[#B6E0FE] text-base">
+                                <strong class="text-[#0B4F8A]">Văn bản được ưu tiên:</strong> Luật Doanh nghiệp 2005 do có hiệu lực pháp lý cao hơn.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Ô 4 - Ý nghĩa & Hình ảnh (Tự động minh họa SVG Tháp Thứ Bậc Pháp Luật) -->
+                    <div class="ocean-card spotlight-item p-4 flex flex-col justify-between animate-enter delay-4">
+                        <p class="text-base lg:text-[17px] leading-snug text-[#083358] mb-2">
+                            <strong class="text-[#0B4F8A]">Ý nghĩa:</strong> Ngăn chặn tình trạng cơ quan cấp dưới ban hành quy định trái cấp trên; bảo vệ quyền tự do kinh doanh.
+                        </p>
+                        <div class="image-dropzone h-24 w-full flex flex-col items-center justify-center p-1.5 text-center cursor-pointer group" onclick="event.stopPropagation(); triggerImageUpload('img-slide-4')" title="Click nếu muốn thay bằng ảnh từ máy tính">
+                            <img id="img-slide-4" src="" alt="Minh họa Khoản 3" class="hidden w-full h-full object-cover rounded-xl" />
+                            <div id="placeholder-img-slide-4" class="w-full h-full flex items-center justify-center relative">
+                                <svg class="h-full max-h-[82px]" viewBox="0 0 340 85" fill="none">
+                                    <polygon points="105,8 145,32 65,32" fill="#0B4F8A"/>
+                                    <text x="105" y="27" text-anchor="middle" fill="#FFFFFF" font-size="8" font-weight="700">LUẬT</text>
+                                    <polygon points="60,36 150,36 168,58 42,58" fill="#2684D6"/>
+                                    <text x="105" y="50" text-anchor="middle" fill="#FFFFFF" font-size="8.5" font-weight="700">NGHỊ ĐỊNH / THÔNG TƯ</text>
+                                    <polygon points="37,62 173,62 190,80 20,80" fill="#B6E0FE"/>
+                                    <text x="105" y="74" text-anchor="middle" fill="#083358" font-size="8.5" font-weight="700">VĂN BẢN ĐỊA PHƯƠNG</text>
+                                    <circle cx="255" cy="44" r="28" fill="#E1F2FE" stroke="#2684D6" stroke-width="2"/>
+                                    <path d="M244 44L252 52L268 36" stroke="#0B4F8A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span class="absolute bottom-1 right-2 text-[10px] text-[#2684D6] bg-white/90 px-2 py-0.5 rounded-full border border-[#B6E0FE] opacity-75 group-hover:opacity-100">Đổi ảnh</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 5: KHOẢN 4 - XUNG ĐỘT VĂN BẢN DO CÙNG MỘT CƠ QUAN BAN HÀNH
+        ========================================================= -->
+        <section class="slide" data-slide="5">
+            <div class="max-w-7xl w-full mx-auto flex flex-col gap-4">
+                <header class="bg-white/85 backdrop-blur-md border border-[#B6E0FE] rounded-2xl px-6 py-3 shadow-sm flex items-center gap-4 animate-enter">
+                    <span class="w-11 h-11 rounded-xl bg-gradient-to-br from-[#0B4F8A] to-[#2684D6] text-white font-extrabold text-xl flex items-center justify-center shrink-0 shadow">K4</span>
+                    <h2 class="text-xl sm:text-2xl font-extrabold ocean-gradient-text leading-snug">
+                        4. Trường hợp các văn bản quy phạm pháp luật do cùng một cơ quan ban hành có quy định khác nhau về cùng một vấn đề thì áp dụng quy định của văn bản quy phạm pháp luật ban hành sau.
+                    </h2>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 spotlight-group items-stretch">
+                    <!-- Ô 1 - Nguyên tắc + Ảnh -->
+                    <div class="lg:col-span-3 ocean-card spotlight-item p-4 flex flex-col justify-between animate-enter delay-1">
+                        <div>
+                            <h3 class="text-lg font-bold text-[#0B4F8A] mb-2.5 flex items-center gap-2">
+                                <span class="card-badge-icon !w-8 !h-8">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                </span>
+                                <span>Nguyên tắc</span>
+                            </h3>
+                            <p class="text-base lg:text-[17px] leading-snug text-[#083358]">
+                                Các VBQPPL do cùng một cơ quan ban hành có quy định khác nhau về cùng một vấn đề → Áp dụng văn bản ban hành sau.
+                            </p>
+                        </div>
+
+                        <!-- Khu vực ảnh Khoản 4 (Tự động minh họa SVG Văn bản ban hành sau) -->
+                        <div class="mt-3">
+                            <div class="image-dropzone h-28 w-full flex flex-col items-center justify-center p-2 text-center cursor-pointer group" onclick="event.stopPropagation(); triggerImageUpload('img-slide-5')" title="Click nếu muốn thay bằng ảnh từ máy tính">
+                                <img id="img-slide-5" src="" alt="Minh họa Khoản 4" class="hidden w-full h-full object-cover rounded-xl" />
+                                <div id="placeholder-img-slide-5" class="w-full h-full flex items-center justify-center relative">
+                                    <svg class="h-full max-h-[92px] svg-float-slow" viewBox="0 0 240 95" fill="none">
+                                        <rect x="22" y="18" width="66" height="62" rx="8" fill="#E1F2FE" stroke="#7CC4FA" stroke-width="2"/>
+                                        <line x1="34" y1="34" x2="76" y2="34" stroke="#7CC4FA" stroke-width="3" stroke-linecap="round"/>
+                                        <line x1="34" y1="46" x2="68" y2="46" stroke="#7CC4FA" stroke-width="3" stroke-linecap="round"/>
+                                        <text x="55" y="68" text-anchor="middle" fill="#2684D6" font-size="10" font-weight="700">2013</text>
+                                        <path d="M98 48H134M126 40L135 48L126 56" stroke="#0B4F8A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <rect x="144" y="12" width="72" height="68" rx="9" fill="#FFFFFF" stroke="#0B4F8A" stroke-width="2.5"/>
+                                        <circle cx="204" cy="22" r="10" fill="#38B6FF"/>
+                                        <path d="M200 22L203 25L209 19" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <line x1="156" y1="36" x2="196" y2="36" stroke="#0B4F8A" stroke-width="3" stroke-linecap="round"/>
+                                        <line x1="156" y1="48" x2="202" y2="48" stroke="#2684D6" stroke-width="3" stroke-linecap="round"/>
+                                        <text x="180" y="69" text-anchor="middle" fill="#0B4F8A" font-size="10.5" font-weight="800">2015 (MỚI)</text>
+                                    </svg>
+                                    <span class="absolute bottom-1 right-2 text-[10px] text-[#2684D6] bg-white/90 px-2 py-0.5 rounded-full border border-[#B6E0FE] opacity-75 group-hover:opacity-100">Đổi ảnh</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ô 2 - Dẫn chứng Timeline 2 mốc nối tiếp -->
+                    <div class="lg:col-span-5 ocean-card spotlight-item p-4 flex flex-col justify-center animate-enter delay-2">
+                        <h3 class="text-lg font-bold text-[#0B4F8A] mb-3 flex items-center gap-2">
+                            <span class="card-badge-icon !w-8 !h-8">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </span>
+                            <span>Dẫn chứng: Thuế GTGT đối với phân bón và thức ăn chăn nuôi</span>
+                        </h3>
+
+                        <div class="relative pl-5 border-l-4 border-[#38B6FF] space-y-3">
+                            <div class="relative p-3 rounded-2xl bg-[#F0F8FF] border border-[#B6E0FE]">
+                                <span class="absolute -left-[30px] top-4 w-4 h-4 rounded-full bg-white border-4 border-[#2684D6]"></span>
+                                <p class="font-bold text-base lg:text-[17px] text-[#0B4F8A] mb-0.5">
+                                    Mốc 1 - Thông tư 219/2013/TT-BTC (Quy định cũ):
+                                </p>
+                                <p class="text-base lg:text-[17px] text-[#083358]">
+                                    Quy định thuế suất GTGT 5% đối với phân bón, thức ăn chăn nuôi.
+                                </p>
+                            </div>
+
+                            <div class="flex justify-center -my-1">
+                                <span class="px-3 py-0.5 rounded-full bg-[#E1F2FE] text-[#0B4F8A] font-bold text-xs">↓ Ban hành sau</span>
+                            </div>
+
+                            <div class="relative p-3 rounded-2xl bg-gradient-to-r from-[#E1F2FE] to-white border-2 border-[#2684D6]">
+                                <span class="absolute -left-[30px] top-4 w-4 h-4 rounded-full bg-[#0B4F8A] border-4 border-[#B6E0FE]"></span>
+                                <p class="font-bold text-base lg:text-[17px] text-[#0B4F8A] mb-0.5">
+                                    Mốc 2 - Tháng 02/2015 - Thông tư 26/2015/TT-BTC (Quy định mới):
+                                </p>
+                                <p class="text-base lg:text-[17px] text-[#083358]">
+                                    Đưa phân bón và thức ăn chăn nuôi vào đối tượng không chịu thuế GTGT.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ô 3 - Kết luận & Ý nghĩa -->
+                    <div class="lg:col-span-4 ocean-card spotlight-item p-4 flex flex-col justify-center space-y-3 animate-enter delay-3">
+                        <div class="p-3.5 rounded-2xl bg-[#F0F8FF] border border-[#B6E0FE]">
+                            <p class="text-base lg:text-[17px] leading-snug text-[#083358]">
+                                <strong class="text-[#0B4F8A]">Kết luận:</strong> Cả hai văn bản do Bộ Tài chính ban hành, cùng điều chỉnh một vấn đề nhưng có quy định khác nhau → Ưu tiên áp dụng Thông tư 26/2015/TT-BTC.
+                            </p>
+                        </div>
+                        <div class="p-3.5 rounded-2xl bg-white border border-[#B6E0FE]">
+                            <p class="text-base lg:text-[17px] leading-snug text-[#083358]">
+                                <strong class="text-[#0B4F8A]">Ý nghĩa:</strong> Giải quyết xung đột giữa các văn bản cùng chủ thể ban hành, bảo đảm tính cập nhật và thống nhất của pháp luật.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 6: KHOẢN 5 (PHẦN 1) - ÁP DỤNG ĐIỀU ƯỚC QUỐC TẾ
+        ========================================================= -->
+        <section class="slide" data-slide="6">
+            <div class="max-w-7xl w-full mx-auto flex flex-col gap-3.5">
+                <header class="bg-white/85 backdrop-blur-md border border-[#B6E0FE] rounded-2xl px-6 py-2.5 shadow-sm flex items-center gap-4 animate-enter">
+                    <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0B4F8A] to-[#2684D6] text-white font-extrabold text-lg flex items-center justify-center shrink-0 shadow">K5</span>
+                    <h2 class="text-xl sm:text-2xl lg:text-3xl font-extrabold ocean-gradient-text leading-snug">
+                        5. Quan hệ giữa Văn bản quy phạm pháp luật trong nước và Điều ước quốc tế
+                    </h2>
+                </header>
+
+                <!-- Khung trích dẫn nguyên văn đầu slide -->
+                <div class="bg-gradient-to-r from-[#0B4F8A] to-[#2684D6] text-white rounded-2xl p-4 shadow-md space-y-2 animate-enter delay-1">
+                    <p class="text-base sm:text-lg leading-snug flex items-start gap-2.5">
+                        <span class="text-xl leading-none text-[#7CC4FA]">❝</span>
+                        <span>Việc áp dụng văn bản quy phạm pháp luật trong nước không được cản trở việc thực hiện điều ước quốc tế mà nước Cộng hòa xã hội chủ nghĩa Việt Nam là thành viên.</span>
+                    </p>
+                    <p class="text-base sm:text-lg leading-snug flex items-start gap-2.5">
+                        <span class="text-xl leading-none text-[#7CC4FA]">❝</span>
+                        <span>Trường hợp văn bản quy phạm pháp luật trong nước và điều ước quốc tế mà nước Cộng hòa xã hội chủ nghĩa Việt Nam là thành viên có quy định khác nhau về cùng một vấn đề thì áp dụng quy định của điều ước quốc tế đó, trừ Hiến pháp.</span>
+                    </p>
+                </div>
+
+                <!-- Ba nội dung cốt lõi (3 thẻ Spotlight ngang nhau) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 spotlight-group items-stretch">
+                    <!-- Ô 1 -->
+                    <div class="ocean-card spotlight-item p-4 flex flex-col animate-enter delay-2">
+                        <h3 class="text-lg font-bold text-[#0B4F8A] mb-2.5 pb-2 border-b border-[#B6E0FE] flex items-center gap-2">
+                            <span class="card-badge-icon !w-8 !h-8">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </span>
+                            <span>1. Nguyên tắc ưu tiên:</span>
+                        </h3>
+                        <ul class="space-y-2 text-base lg:text-[17px] leading-snug text-[#083358]">
+                            <li class="flex items-start gap-2">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Khi VBQPPL trong nước và điều ước quốc tế (ĐƯQT) có quy định khác nhau về cùng vấn đề → Ưu tiên áp dụng ĐƯQT.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Ngoại lệ: Hiến pháp luôn được ưu tiên.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Ô 2 -->
+                    <div class="ocean-card spotlight-item p-4 flex flex-col animate-enter delay-3">
+                        <h3 class="text-lg font-bold text-[#0B4F8A] mb-2.5 pb-2 border-b border-[#B6E0FE] flex items-center gap-2">
+                            <span class="card-badge-icon !w-8 !h-8">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            </span>
+                            <span>2. Nghĩa vụ không cản trở:</span>
+                        </h3>
+                        <ul class="space-y-2 text-base lg:text-[17px] leading-snug text-[#083358]">
+                            <li class="flex items-start gap-2">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Việc áp dụng pháp luật trong nước không được cản trở thực hiện các cam kết quốc tế.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Cơ quan nhà nước cần rà soát, bảo đảm tính tương thích giữa pháp luật trong nước và ĐƯQT.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Ô 3 -->
+                    <div class="ocean-card spotlight-item p-4 flex flex-col animate-enter delay-4">
+                        <h3 class="text-lg font-bold text-[#0B4F8A] mb-2.5 pb-2 border-b border-[#B6E0FE] flex items-center gap-2">
+                            <span class="card-badge-icon !w-8 !h-8">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                            </span>
+                            <span>3. Ý nghĩa:</span>
+                        </h3>
+                        <ul class="space-y-2 text-base lg:text-[17px] leading-snug text-[#083358]">
+                            <li class="flex items-start gap-2">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Bảo đảm thực hiện cam kết quốc tế.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Tạo môi trường pháp lý minh bạch, thu hút đầu tư.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="mt-2 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Thúc đẩy nội luật hóa, sửa đổi pháp luật trong nước.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 7: KHOẢN 5 (PHẦN 2) - DẪN CHỨNG & NGOẠI LỆ HIẾN PHÁP
+        ========================================================= -->
+        <section class="slide" data-slide="7">
+            <div class="max-w-7xl w-full mx-auto flex flex-col gap-4">
+                <header class="bg-white/85 backdrop-blur-md border border-[#B6E0FE] rounded-2xl px-6 py-3 shadow-sm flex items-center gap-4 animate-enter">
+                    <span class="w-11 h-11 rounded-xl bg-gradient-to-br from-[#0B4F8A] to-[#2684D6] text-white font-extrabold text-xl flex items-center justify-center shrink-0 shadow">VD</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold ocean-gradient-text leading-snug">
+                        Dẫn chứng: Công ước Viên 1968 về Giao thông đường bộ
+                    </h2>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 spotlight-group items-stretch">
+                    <!-- Cột trái: 2 ô so sánh đối chiếu -->
+                    <div class="lg:col-span-6 flex flex-col gap-4">
+                        <!-- Ô 1 -->
+                        <div class="ocean-card spotlight-item p-5 flex-1 flex flex-col justify-center animate-enter delay-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="px-3 py-1 rounded-lg bg-[#E1F2FE] text-[#0B4F8A] font-bold text-sm">Văn bản trong nước</span>
+                                <h3 class="text-xl font-bold text-[#0B4F8A]">Luật Giao thông đường bộ 2008</h3>
+                            </div>
+                            <p class="text-lg leading-relaxed text-[#083358]">
+                                Yêu cầu người lái xe và người ngồi hàng ghế phía trước thắt dây an toàn.
+                            </p>
+                        </div>
+
+                        <!-- Ô 2 -->
+                        <div class="ocean-card spotlight-item p-5 flex-1 flex flex-col justify-center animate-enter delay-2">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="px-3 py-1 rounded-lg bg-[#2684D6] text-white font-bold text-sm">Điều ước quốc tế</span>
+                                <h3 class="text-xl font-bold text-[#0B4F8A]">Công ước Viên 1968</h3>
+                            </div>
+                            <p class="text-lg leading-relaxed text-[#083358]">
+                                Yêu cầu tất cả hành khách tại vị trí có trang bị dây an toàn phải thắt dây.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Cột phải: Ô 3 Kết luận áp dụng, Ngoại lệ & Khu vực ảnh -->
+                    <div class="lg:col-span-6 ocean-card spotlight-item p-5 flex flex-col justify-between animate-enter delay-3">
+                        <div class="space-y-3">
+                            <h3 class="text-lg font-bold text-[#0B4F8A] flex items-center gap-2">
+                                <span class="card-badge-icon !w-8 !h-8">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                </span>
+                                <span>Kết luận áp dụng & Ngoại lệ quan trọng</span>
+                            </h3>
+                            <p class="text-base lg:text-[17px] leading-snug text-[#083358] p-3 rounded-xl bg-[#F0F8FF] border border-[#B6E0FE]">
+                                → Khi có sự khác biệt về cùng vấn đề, ưu tiên quy định của Công ước Viên, trừ trường hợp Hiến pháp có quy định khác.
+                            </p>
+                            <p class="text-base lg:text-[17px] leading-snug text-[#083358]">
+                                <strong class="text-[#0B4F8A]">Ngoại lệ quan trọng:</strong> Điều 3 Luật Điều ước quốc tế 2016 quy định việc ký kết, gia nhập ĐƯQT phải bảo đảm không trái với Hiến pháp Việt Nam.
+                            </p>
+                        </div>
+
+                        <!-- Khu vực ảnh Slide 7 (Tự động minh họa SVG Thắt dây an toàn ô tô) -->
+                        <div class="mt-3">
+                            <div class="image-dropzone h-32 w-full flex flex-col items-center justify-center p-2 text-center cursor-pointer group" onclick="event.stopPropagation(); triggerImageUpload('img-slide-7')" title="Click nếu muốn thay bằng ảnh từ máy tính">
+                                <img id="img-slide-7" src="" alt="Thắt dây an toàn / Công ước Viên" class="hidden w-full h-full object-cover rounded-xl" />
+                                <div id="placeholder-img-slide-7" class="w-full h-full flex items-center justify-center relative">
+                                    <svg class="h-full max-h-[108px] svg-float-slow" viewBox="0 0 340 110" fill="none">
+                                        <path d="M45 72L68 38C74 30 84 26 95 26H195C208 26 218 32 225 42L245 72H272C282 72 288 78 288 86V92H32V84C32 76 38 72 45 72Z" fill="#E1F2FE" stroke="#2684D6" stroke-width="2.5"/>
+                                        <circle cx="84" cy="92" r="14" fill="#0B4F8A"/>
+                                        <circle cx="84" cy="92" r="6" fill="#B6E0FE"/>
+                                        <circle cx="236" cy="92" r="14" fill="#0B4F8A"/>
+                                        <circle cx="236" cy="92" r="6" fill="#B6E0FE"/>
+                                        <circle cx="118" cy="48" r="9" fill="#2684D6"/>
+                                        <path d="M106 72C106 62 130 62 130 72" fill="#38B6FF"/>
+                                        <line x1="109" y1="58" x2="127" y2="71" stroke="#0B4F8A" stroke-width="3" stroke-linecap="round"/>
+                                        <circle cx="176" cy="48" r="9" fill="#2684D6"/>
+                                        <path d="M164 72C164 62 188 62 188 72" fill="#38B6FF"/>
+                                        <line x1="167" y1="58" x2="185" y2="71" stroke="#0B4F8A" stroke-width="3" stroke-linecap="round"/>
+                                        <rect x="242" y="16" width="84" height="36" rx="10" fill="#FFFFFF" stroke="#0B4F8A" stroke-width="2"/>
+                                        <text x="284" y="32" text-anchor="middle" fill="#0B4F8A" font-size="9" font-weight="800">VIENNA 1968</text>
+                                        <text x="284" y="44" text-anchor="middle" fill="#2684D6" font-size="8.5" font-weight="700">100% Dây an toàn</text>
+                                    </svg>
+                                    <span class="absolute bottom-1 right-2 text-[10px] text-[#2684D6] bg-white/90 px-2 py-0.5 rounded-full border border-[#B6E0FE] opacity-75 group-hover:opacity-100">Đổi ảnh</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 8: KHOẢN 6 - TRƯỜNG HỢP ÁP DỤNG KHÁC DO QUỐC HỘI QUY ĐỊNH
+        ========================================================= -->
+        <section class="slide" data-slide="8">
+            <div class="max-w-7xl w-full mx-auto flex flex-col gap-4">
+                <header class="bg-white/85 backdrop-blur-md border border-[#B6E0FE] rounded-2xl px-6 py-3 shadow-sm flex items-center gap-4 animate-enter">
+                    <span class="w-11 h-11 rounded-xl bg-gradient-to-br from-[#0B4F8A] to-[#2684D6] text-white font-extrabold text-xl flex items-center justify-center shrink-0 shadow">K6</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold ocean-gradient-text leading-snug">
+                        6. Việc áp dụng pháp luật khác với quy định tại các khoản 1, 2, 3, 4 và 5 Điều này do Quốc hội quy định.
+                    </h2>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 spotlight-group items-stretch">
+                    <!-- Ô 1 - Nguyên tắc -->
+                    <div class="ocean-card spotlight-item p-5 flex flex-col animate-enter delay-1">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="card-badge-icon">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-[#0B4F8A]">Nguyên tắc</h3>
+                        </div>
+                        <ul class="space-y-3 text-lg leading-relaxed text-[#083358]">
+                            <li class="flex items-start gap-2.5">
+                                <span class="mt-2.5 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Việc áp dụng pháp luật khác với các nguyên tắc tại khoản 1–5 Điều 58 phải do Quốc hội quy định.</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <span class="mt-2.5 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Bảo đảm thẩm quyền quyết định các trường hợp ngoại lệ thuộc về cơ quan lập pháp cao nhất.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Ô 2 - Dẫn chứng -->
+                    <div class="ocean-card spotlight-item p-5 flex flex-col animate-enter delay-2">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="card-badge-icon">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-[#0B4F8A]">Dẫn chứng: Nghị quyết 98/2023/QH15 về cơ chế đặc thù phát triển TP.HCM</h3>
+                        </div>
+                        <ul class="space-y-3 text-lg leading-relaxed text-[#083358]">
+                            <li class="flex items-start gap-2.5">
+                                <span class="mt-2.5 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Quốc hội cho phép TP.HCM thí điểm một số cơ chế, chính sách đặc thù.</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <span class="mt-2.5 w-2 h-2 rounded-full bg-[#2684D6] shrink-0"></span>
+                                <span>Một số cơ chế được áp dụng khác với quy định pháp luật hiện hành trong phạm vi được Quốc hội cho phép.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Ô 3 - Ý nghĩa & Khu vực ảnh -->
+                    <div class="ocean-card spotlight-item p-5 flex flex-col justify-between animate-enter delay-3">
+                        <div>
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="card-badge-icon">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-[#0B4F8A]">Ý nghĩa</h3>
+                            </div>
+                            <p class="text-lg leading-relaxed text-[#083358]">
+                                Tạo cơ sở pháp lý cho việc thí điểm chính sách, đáp ứng yêu cầu thực tiễn nhưng vẫn bảo đảm thẩm quyền và tính hợp pháp.
+                            </p>
+                        </div>
+
+                        <!-- Khu vực ảnh Slide 8 (Tự động minh họa SVG Tòa nhà Quốc hội & TP.HCM) -->
+                        <div class="mt-3">
+                            <div class="image-dropzone h-32 w-full flex flex-col items-center justify-center p-2 text-center cursor-pointer group" onclick="event.stopPropagation(); triggerImageUpload('img-slide-8')" title="Click nếu muốn thay bằng ảnh từ máy tính">
+                                <img id="img-slide-8" src="" alt="TP.HCM / Nghị quyết 98" class="hidden w-full h-full object-cover rounded-xl" />
+                                <div id="placeholder-img-slide-8" class="w-full h-full flex items-center justify-center relative">
+                                    <svg class="h-full max-h-[108px] svg-float-slow" viewBox="0 0 320 110" fill="none">
+                                        <rect x="36" y="42" width="26" height="54" rx="4" fill="#B6E0FE"/>
+                                        <path d="M74 96V24L88 12L102 24V96H74Z" fill="#2684D6"/>
+                                        <line x1="88" y1="6" x2="88" y2="14" stroke="#0B4F8A" stroke-width="2.5"/>
+                                        <rect x="114" y="34" width="32" height="62" rx="5" fill="#7CC4FA"/>
+                                        <rect x="166" y="22" width="124" height="66" rx="14" fill="#FFFFFF" stroke="#0B4F8A" stroke-width="2.5"/>
+                                        <circle cx="228" cy="40" r="10" fill="#E1F2FE" stroke="#2684D6" stroke-width="2"/>
+                                        <path d="M228 34L229.8 38.2L234 38.6L230.8 41.4L231.8 45.5L228 43.3L224.2 45.5L225.2 41.4L222 38.6L226.2 38.2L228 34Z" fill="#0B4F8A"/>
+                                        <text x="228" y="63" text-anchor="middle" fill="#0B4F8A" font-size="10" font-weight="800">NQ 98/2023/QH15</text>
+                                        <text x="228" y="76" text-anchor="middle" fill="#2684D6" font-size="8.5" font-weight="700">Cơ chế đặc thù TP.HCM</text>
+                                    </svg>
+                                    <span class="absolute bottom-1 right-2 text-[10px] text-[#2684D6] bg-white/90 px-2 py-0.5 rounded-full border border-[#B6E0FE] opacity-75 group-hover:opacity-100">Đổi ảnh</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             SLIDE 9: TRANG CẢM ƠN (THANK YOU SLIDE)
+        ========================================================= -->
+        <section class="slide" data-slide="9">
+            <div class="max-w-5xl w-full mx-auto flex flex-col items-center text-center space-y-5">
+                <div class="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-white/95 border border-[#B6E0FE] shadow-sm animate-enter">
+                    <span class="w-3 h-3 rounded-full bg-[#00A8E8] animate-ping"></span>
+                    <span class="shimmer-keyword text-base tracking-wide uppercase">Kết thúc phần thuyết trình • Điều 58</span>
+                </div>
+
+                <h2 class="text-5xl sm:text-6xl lg:text-[66px] font-extrabold leading-tight ocean-gradient-text tracking-tight animate-enter delay-1">
+                    CẢM ƠN THẦY CÔ VÀ CÁC BẠN ĐÃ LẮNG NGHE!
+                </h2>
+
+                <div class="flex items-center justify-center gap-3 animate-enter delay-2">
+                    <div class="w-8 h-2 rounded-full bg-[#B6E0FE]"></div>
+                    <div class="w-28 h-2 rounded-full bg-gradient-to-r from-[#0B4F8A] via-[#00A8E8] to-[#38B6FF]"></div>
+                    <div class="w-8 h-2 rounded-full bg-[#B6E0FE]"></div>
+                </div>
+
+                <!-- Minh họa Thủy cung Đại dương & Cá heo chào tạm biệt -->
+                <div class="w-full max-w-2xl ocean-card p-3 animate-enter delay-3">
+                    <div class="image-dropzone h-44 w-full flex flex-col items-center justify-center p-2 text-center cursor-pointer group" onclick="triggerImageUpload('img-slide-9')" title="Click nếu muốn thay bằng ảnh kỷ niệm nhóm">
+                        <img id="img-slide-9" src="" alt="Hình ảnh kỷ niệm nhóm" class="hidden w-full h-full object-cover rounded-xl" />
+                        <div id="placeholder-img-slide-9" class="w-full h-full flex items-center justify-center relative">
+                            <svg class="h-full max-h-[152px] svg-float-slow" viewBox="0 0 480 155" fill="none">
+                                <ellipse cx="240" cy="85" rx="180" ry="58" fill="#E1F2FE" opacity="0.6"/>
+                                <path d="M135 86C127 78 120 82 118 89C125 90 130 94 132 101C139 96 142 91 139 87C155 92 178 94 202 85C224 77 242 70 253 67C257 66 257 61 252 59C244 56 237 56 233 53C222 39 195 36 173 47C154 56 143 72 135 86Z" fill="#2684D6"/>
+                                <circle cx="224" cy="57" r="3.5" fill="#FFFFFF"/>
+                                <circle cx="225" cy="57" r="1.8" fill="#083358"/>
+                                <ellipse cx="325" cy="76" rx="28" ry="18" fill="#38B6FF"/>
+                                <path d="M302 76C302 64 348 64 348 76H302Z" fill="#0B4F8A"/>
+                                <circle cx="358" cy="73" r="8" fill="#7CC4FA"/>
+                                <circle cx="360" cy="71" r="2" fill="#083358"/>
+                                <path d="M312 90L302 102M338 90L348 102" stroke="#2684D6" stroke-width="5" stroke-linecap="round"/>
+                                <circle cx="272" cy="40" r="6" fill="#FFFFFF" stroke="#38B6FF" stroke-width="2"/>
+                                <circle cx="284" cy="26" r="4" fill="#B6E0FE"/>
+                                <circle cx="105" cy="52" r="5" fill="#FFFFFF" stroke="#7CC4FA" stroke-width="2"/>
+                            </svg>
+                            <span class="absolute bottom-1 right-2 text-[11px] text-[#2684D6] bg-white/90 px-2.5 py-0.5 rounded-full border border-[#B6E0FE] opacity-80 group-hover:opacity-100">Đổi ảnh</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-1 animate-enter delay-4">
+                    <button onclick="goToSlide(0)" class="group inline-flex items-center gap-2.5 px-7 py-3.5 rounded-2xl bg-gradient-to-r from-[#0B4F8A] to-[#2684D6] text-white font-bold text-lg shadow-lg shadow-[#2684D6]/25 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer">
+                        <svg class="w-5 h-5 transform group-hover:-rotate-45 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        <span>Quay lại trang đầu</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Input file ẩn dùng chung để tải ảnh lên bất kỳ khung nào -->
+    <input type="file" id="global-image-input" accept="image/*" class="hidden" />
+
+    <!-- BỘ ĐIỀU KHIỂN THUYẾT TRÌNH GÓC DƯỚI BÊN PHẢI -->
+    <nav aria-label="Điều khiển thuyết trình" class="fixed bottom-5 right-6 z-50 flex items-center gap-2.5 bg-white/90 backdrop-blur-md border border-[#B6E0FE] px-4 py-2 rounded-full shadow-lg shadow-[#0B4F8A]/10">
+        <button id="btn-prev" onclick="prevSlide()" title="Slide trước (Mũi tên trái)" class="w-10 h-10 rounded-full flex items-center justify-center text-[#0B4F8A] hover:bg-[#E1F2FE] active:scale-90 transition disabled:opacity-35 disabled:pointer-events-none cursor-pointer">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+            </svg>
+        </button>
+
+        <div class="px-3 py-1 rounded-full bg-[#F0F8FF] border border-[#B6E0FE] text-[#0B4F8A] font-extrabold text-base min-w-[68px] text-center">
+            <span id="slide-counter">1 / 9</span>
+        </div>
+
+        <button id="btn-next" onclick="nextSlide()" title="Slide tiếp theo (Mũi tên phải / Space)" class="w-10 h-10 rounded-full flex items-center justify-center text-[#0B4F8A] hover:bg-[#E1F2FE] active:scale-90 transition disabled:opacity-35 disabled:pointer-events-none cursor-pointer">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+            </svg>
+        </button>
+
+        <div class="w-[1px] h-6 bg-[#B6E0FE] mx-1"></div>
+
+        <button onclick="toggleFullscreen()" title="Toàn màn hình" class="w-10 h-10 rounded-full flex items-center justify-center text-[#2684D6] hover:bg-[#E1F2FE] active:scale-90 transition cursor-pointer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+            </svg>
+        </button>
+    </nav>
+
+    <!-- THANH TIẾN TRÌNH SÓNG NƯỚC Ở ĐÁY MÀN HÌNH -->
+    <div class="progress-container">
+        <div id="progress-bar" class="progress-wave-bar"></div>
+    </div>
+
+    <script>
+        /* =============================================================
+           1. QUẢN LÝ CHUYỂN SLIDE & ĐIỀU KHIỂN THUYẾT TRÌNH
+        ============================================================= */
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let currentSlide = 0;
+
+        const slideCounterEl = document.getElementById('slide-counter');
+        const progressBarEl = document.getElementById('progress-bar');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        function updateSlideUI() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else if (index < currentSlide) {
+                    slide.classList.add('prev');
+                }
+            });
+
+            slideCounterEl.textContent = `${currentSlide + 1} / ${totalSlides}`;
+            const progressPercent = ((currentSlide + 1) / totalSlides) * 100;
+            progressBarEl.style.width = `${progressPercent}%`;
+
+            btnPrev.disabled = currentSlide === 0;
+            btnNext.disabled = currentSlide === totalSlides - 1;
+
+            resetAllSpotlights();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlideUI();
+                triggerMascotSwim();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlideUI();
+                triggerMascotSwim();
+            }
+        }
+
+        function goToSlide(index) {
+            if (index >= 0 && index < totalSlides) {
+                currentSlide = index;
+                updateSlideUI();
+                triggerMascotSwim();
+            }
+        }
+
+        /* =============================================================
+           2. HIỆU ỨNG SPOTLIGHT CHO CÁC KHỐI THẺ NỘI DUNG
+        ============================================================= */
+        const spotlightGroups = document.querySelectorAll('.spotlight-group');
+
+        spotlightGroups.forEach(group => {
+            const items = group.querySelectorAll('.spotlight-item');
+            let lockedItem = null;
+
+            items.forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    if (!lockedItem) {
+                        group.classList.add('has-focus');
+                        items.forEach(el => el.classList.remove('is-focused'));
+                        item.classList.add('is-focused');
+                    }
+                });
+
+                item.addEventListener('mouseleave', () => {
+                    if (!lockedItem) {
+                        group.classList.remove('has-focus');
+                        item.classList.remove('is-focused');
+                    }
+                });
+
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (lockedItem === item) {
+                        lockedItem = null;
+                        group.classList.remove('has-focus');
+                        item.classList.remove('is-focused');
+                    } else {
+                        lockedItem = item;
+                        group.classList.add('has-focus');
+                        items.forEach(el => el.classList.remove('is-focused'));
+                        item.classList.add('is-focused');
+                    }
+                });
+            });
+
+            document.addEventListener('click', () => {
+                if (lockedItem) {
+                    lockedItem = null;
+                    group.classList.remove('has-focus');
+                    items.forEach(el => el.classList.remove('is-focused'));
+                }
+            });
+
+            group._resetLock = () => {
+                lockedItem = null;
+                group.classList.remove('has-focus');
+                items.forEach(el => el.classList.remove('is-focused'));
+            };
+        });
+
+        function resetAllSpotlights() {
+            spotlightGroups.forEach(group => {
+                if (group._resetLock) group._resetLock();
+            });
+        }
+
+        /* =============================================================
+           3. TÍNH NĂNG TẢI HÌNH ẢNH TRỰC TIẾP VÀO KHUNG CHỨA
+        ============================================================= */
+        const globalImageInput = document.getElementById('global-image-input');
+        let currentTargetImgId = null;
+
+        function triggerImageUpload(imgElementId) {
+            currentTargetImgId = imgElementId;
+            globalImageInput.value = '';
+            globalImageInput.click();
+        }
+
+        globalImageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && currentTargetImgId) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const imgEl = document.getElementById(currentTargetImgId);
+                    const placeholderEl = document.getElementById(`placeholder-${currentTargetImgId}`);
+                    if (imgEl && placeholderEl) {
+                        imgEl.src = event.target.result;
+                        imgEl.classList.remove('hidden');
+                        placeholderEl.classList.add('hidden');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        /* =============================================================
+           4. HIỆU ỨNG BONG BÓNG NƯỚC (FLOATING BUBBLES)
+        ============================================================= */
+        function createOceanBubbles() {
+            const container = document.getElementById('bubbles-container');
+            const bubbleCount = 22;
+
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+
+                const size = Math.random() * 20 + 8;
+                const leftPos = Math.random() * 100;
+                const duration = Math.random() * 10 + 9;
+                const delay = Math.random() * 12;
+
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${leftPos}%`;
+                bubble.style.animationDuration = `${duration}s`;
+                bubble.style.animationDelay = `${delay}s`;
+
+                container.appendChild(bubble);
+            }
+        }
+
+        /* =============================================================
+           5. LINH VẬT CÁ HEO CON BƠI LỘI Ở VÙNG AN TOÀN (SAFE-ZONE)
+        ============================================================= */
+        const mascotEl = document.getElementById('ocean-mascot');
+        let isMascotSwimming = false;
+
+        function triggerMascotSwim() {
+            if (isMascotSwimming) return;
+            isMascotSwimming = true;
+
+            const safeLeftPositions = ['4%', '18%', '35%', '52%'];
+            const randomLeft = safeLeftPositions[Math.floor(Math.random() * safeLeftPositions.length)];
+            mascotEl.style.left = randomLeft;
+
+            mascotEl.classList.remove('mascot-swim-action');
+            void mascotEl.offsetWidth;
+            mascotEl.classList.add('mascot-swim-action');
+
+            setTimeout(() => {
+                isMascotSwimming = false;
+            }, 7800);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateSlideUI();
+            createOceanBubbles();
+
+            setTimeout(triggerMascotSwim, 1800);
+            setInterval(triggerMascotSwim, 12000);
+        });
+
+        /* =============================================================
+           6. HIỆU ỨNG TƯƠNG TÁC CON TRỎ CHUỘT & GỢN SÓNG KHI CLICK
+        ============================================================= */
+        const cursorGlow = document.getElementById('cursor-glow');
+        document.addEventListener('mousemove', (e) => {
+            if (cursorGlow) {
+                cursorGlow.style.left = `${e.clientX}px`;
+                cursorGlow.style.top = `${e.clientY}px`;
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            const ripple = document.createElement('div');
+            ripple.className = 'click-ripple';
+            ripple.style.left = `${e.clientX}px`;
+            ripple.style.top = `${e.clientY}px`;
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 900);
+        });
+
+        /* Hỗ trợ điều khiển bàn phím & toàn màn hình */
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            }
+        });
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen().catch(() => {});
+            }
+        }
+    </script>
+</body>
+</html>
